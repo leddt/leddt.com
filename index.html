@@ -73,6 +73,10 @@
           height: calc(
             var(--item-h) * var(--grid-cell-size) - var(--grid-line-width)
           );
+
+          &:has(>a) {
+            padding: 0;
+          }
         }
       }
 
@@ -136,10 +140,6 @@
 
         font-size: 150%;
         font-weight: bold;
-
-        padding: 0;
-        align-items: stretch;
-        --justify-content: stretch;
       }
       #contact {
         --item-x: 8;
@@ -212,10 +212,6 @@
 
           font-size: 150%;
           font-weight: bold;
-
-          padding: 0;
-          align-items: stretch;
-          --justify-content: stretch;
         }
         #contact {
           --item-x: 16;
