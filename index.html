@@ -89,9 +89,14 @@
         justify-content: center;
         gap: 0.5rem;
 
+        transition: all 0.15s ease-in-out;
+        will-change: transform, background-color, color;
+
         &:hover {
           background-color: var(--grid-foreground);
           color: var(--grid-background);
+          transform: scale(1.25) rotate(5deg);
+          z-index: 100;
         }
 
         svg {
