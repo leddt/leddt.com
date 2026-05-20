@@ -119,12 +119,19 @@
       }
 
       .particle {
+        --item-x: 0;
+        --item-y: 0;
+        --item-w: 1;
+        --item-h: 1;
+
         position: absolute;
+        top: calc(var(--item-y) * var(--grid-cell-size));
+        left: calc(var(--item-x) * var(--grid-cell-size));
         width: calc(
-          var(--grid-cell-size) - var(--grid-line-width)
+          var(--item-w) * var(--grid-cell-size) - var(--grid-line-width)
         );
         height: calc(
-          var(--grid-cell-size) - var(--grid-line-width)
+          var(--item-h) * var(--grid-cell-size) - var(--grid-line-width)
         );
         background-color: var(--grid-foreground);
         opacity: 0;

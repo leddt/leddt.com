@@ -1,5 +1,4 @@
 (function () {
-  const CELL = 30;
   const PARTICLE_COUNT = 8;
   const INITIAL_VISIBLE = 3;
   const FADE_MS = 4000;
@@ -11,23 +10,31 @@
     return x + "," + y;
   }
 
+  function getGridCellSize() {
+    return (
+      parseFloat(
+        getComputedStyle(document.body).getPropertyValue("--grid-cell-size")
+      ) || 30
+    );
+  }
+
+  function readItemVar(style, name) {
+    return parseFloat(style.getPropertyValue(name)) || 0;
+  }
+
   function getOccupiedCells() {
     const occupied = new Set();
     document
       .querySelectorAll("body > *:not(#particles)")
       .forEach(function (el) {
         const style = getComputedStyle(el);
-        const left = parseFloat(style.left) || 0;
-        const top = parseFloat(style.top) || 0;
-        const width = parseFloat(style.width) || 0;
-        const height = parseFloat(style.height) || 0;
-        const x0 = Math.floor(left / CELL);
-        const y0 = Math.floor(top / CELL);
-        const x1 = Math.ceil((left + width) / CELL);
-        const y1 = Math.ceil((top + height) / CELL);
-        for (let x = x0; x < x1; x++) {
-          for (let y = y0; y < y1; y++) {
-            occupied.add(cellKey(x, y));
+        const x = readItemVar(style, "--item-x");
+        const y = readItemVar(style, "--item-y");
+        const w = readItemVar(style, "--item-w") || 1;
+        const h = readItemVar(style, "--item-h") || 1;
+        for (let cx = x; cx < x + w; cx++) {
+          for (let cy = y; cy < y + h; cy++) {
+            occupied.add(cellKey(cx, cy));
           }
         }
       });
@@ -35,8 +42,9 @@
   }
 
   function getAvailableCells(occupied, reserved) {
-    const cols = Math.ceil(window.innerWidth / CELL);
-    const rows = Math.ceil(window.innerHeight / CELL);
+    const cellSize = getGridCellSize();
+    const cols = Math.ceil(window.innerWidth / cellSize);
+    const rows = Math.ceil(window.innerHeight / cellSize);
     const available = [];
     for (let x = 0; x < cols; x++) {
       for (let y = 0; y < rows; y++) {
@@ -64,8 +72,8 @@
   }
 
   function placeParticle(el, cell) {
-    el.style.left = cell.x * CELL + "px";
-    el.style.top = cell.y * CELL + "px";
+    el.style.setProperty("--item-x", String(cell.x));
+    el.style.setProperty("--item-y", String(cell.y));
   }
 
   function wait(ms) {
