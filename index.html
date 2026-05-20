@@ -53,7 +53,7 @@
         position: relative;
         min-height: 100vh;
 
-        > *:not(#particles) {
+        > *:not(#particles):not(script) {
           z-index: 2;
 
           --item-x: 0;
@@ -202,7 +202,7 @@
       }
 
       @media (min-width: 915px) {
-        body > *:not(#particles) {
+        body > *:not(#particles):not(script) {
           justify-content: center;
         }
 
@@ -360,7 +360,7 @@
 
         function getOccupiedCells() {
           const occupied = new Set();
-          document.querySelectorAll("body > *:not(#particles)").forEach(function (el) {
+          document.querySelectorAll("body > *:not(#particles):not(script)").forEach(function (el) {
             const style = getComputedStyle(el);
             const left = parseFloat(style.left) || 0;
             const top = parseFloat(style.top) || 0;
