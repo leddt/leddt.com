@@ -38,19 +38,15 @@
           readItemVar(style, "--item-x") + (readItemVar(style, "--item-w") || 1)
         );
       });
-    const cellSize = getGridCellSize();
-    return {
-      cols: Math.max(maxCol, Math.ceil(window.innerWidth / cellSize)),
-      rows: Math.max(maxRow, Math.ceil(window.innerHeight / cellSize)),
-    };
+    return { cols: maxCol, rows: maxRow };
   }
 
   function syncGridSize() {
     const cellSize = getGridCellSize();
     const bounds = getGridBounds();
-    document.body.style.minHeight = bounds.rows * cellSize + "px";
-    particlesEl.style.width = bounds.cols * cellSize + "px";
-    particlesEl.style.height = bounds.rows * cellSize + "px";
+    const height = bounds.rows * cellSize;
+    document.body.style.minHeight = height > 0 ? height + "px" : "";
+    particlesEl.style.height = height > 0 ? height + "px" : "";
   }
 
   function getOccupiedCells() {
