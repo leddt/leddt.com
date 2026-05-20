@@ -22,6 +22,37 @@
     return parseFloat(style.getPropertyValue(name)) || 0;
   }
 
+  function getGridBounds() {
+    let maxRow = 0;
+    let maxCol = 0;
+    document
+      .querySelectorAll("body > *:not(#particles)")
+      .forEach(function (el) {
+        const style = getComputedStyle(el);
+        maxRow = Math.max(
+          maxRow,
+          readItemVar(style, "--item-y") + (readItemVar(style, "--item-h") || 1)
+        );
+        maxCol = Math.max(
+          maxCol,
+          readItemVar(style, "--item-x") + (readItemVar(style, "--item-w") || 1)
+        );
+      });
+    const cellSize = getGridCellSize();
+    return {
+      cols: Math.max(maxCol, Math.ceil(window.innerWidth / cellSize)),
+      rows: Math.max(maxRow, Math.ceil(window.innerHeight / cellSize)),
+    };
+  }
+
+  function syncGridSize() {
+    const cellSize = getGridCellSize();
+    const bounds = getGridBounds();
+    document.body.style.minHeight = bounds.rows * cellSize + "px";
+    particlesEl.style.width = bounds.cols * cellSize + "px";
+    particlesEl.style.height = bounds.rows * cellSize + "px";
+  }
+
   function getOccupiedCells() {
     const occupied = new Set();
     document
@@ -42,12 +73,10 @@
   }
 
   function getAvailableCells(occupied, reserved) {
-    const cellSize = getGridCellSize();
-    const cols = Math.ceil(window.innerWidth / cellSize);
-    const rows = Math.ceil(window.innerHeight / cellSize);
+    const bounds = getGridBounds();
     const available = [];
-    for (let x = 0; x < cols; x++) {
-      for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < bounds.cols; x++) {
+      for (let y = 0; y < bounds.rows; y++) {
         const key = cellKey(x, y);
         if (!occupied.has(key) && !reserved.has(key)) {
           available.push({ x: x, y: y, key: key });
@@ -122,6 +151,8 @@
     }
   }
 
+  syncGridSize();
+
   const reserved = new Set();
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const el = document.createElement("div");
@@ -137,8 +168,6 @@
   let resizeTimer;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      getOccupiedCells();
-    }, 200);
+    resizeTimer = setTimeout(syncGridSize, 200);
   });
 })();
