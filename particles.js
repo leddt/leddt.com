@@ -22,31 +22,12 @@
     return parseFloat(style.getPropertyValue(name)) || 0;
   }
 
-  function getGridBounds() {
-    let maxRow = 0;
-    let maxCol = 0;
-    document
-      .querySelectorAll("body > *:not(#particles)")
-      .forEach(function (el) {
-        const style = getComputedStyle(el);
-        maxRow = Math.max(
-          maxRow,
-          readItemVar(style, "--item-y") + (readItemVar(style, "--item-h") || 1)
-        );
-        maxCol = Math.max(
-          maxCol,
-          readItemVar(style, "--item-x") + (readItemVar(style, "--item-w") || 1)
-        );
-      });
-    return { cols: maxCol, rows: maxRow };
-  }
-
-  function syncGridSize() {
+  function getViewportBounds() {
     const cellSize = getGridCellSize();
-    const bounds = getGridBounds();
-    const height = bounds.rows * cellSize;
-    document.body.style.minHeight = height > 0 ? height + "px" : "";
-    particlesEl.style.height = height > 0 ? height + "px" : "";
+    return {
+      cols: Math.ceil(window.innerWidth / cellSize),
+      rows: Math.ceil(window.innerHeight / cellSize),
+    };
   }
 
   function getOccupiedCells() {
@@ -69,7 +50,7 @@
   }
 
   function getAvailableCells(occupied, reserved) {
-    const bounds = getGridBounds();
+    const bounds = getViewportBounds();
     const available = [];
     for (let x = 0; x < bounds.cols; x++) {
       for (let y = 0; y < bounds.rows; y++) {
@@ -147,8 +128,6 @@
     }
   }
 
-  syncGridSize();
-
   const reserved = new Set();
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const el = document.createElement("div");
@@ -161,9 +140,4 @@
     }, delay);
   }
 
-  let resizeTimer;
-  window.addEventListener("resize", function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(syncGridSize, 200);
-  });
 })();
