@@ -3,7 +3,7 @@
   const INITIAL_VISIBLE = 3;
   const FADE_MS = 4000;
   const VISIBLE_MS = 2500;
-  const VISIBLE_OPACITY = 0.45;
+  const VISIBLE_OPACITY = 1;
   const particlesEl = document.getElementById("particles");
 
   function cellKey(x, y) {
@@ -110,7 +110,7 @@
       placeParticle(el, cell);
       if (startVisible) {
         startVisible = false;
-        setOpacity(el, VISIBLE_OPACITY * (0.55 + Math.random() * 0.45));
+        setOpacity(el, VISIBLE_OPACITY);
         await wait(VISIBLE_MS * (0.3 + Math.random() * 0.7));
       } else {
         await fadeIn(el);
