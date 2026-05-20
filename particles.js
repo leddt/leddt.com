@@ -1,8 +1,10 @@
 (function () {
   const CELL = 30;
   const PARTICLE_COUNT = 8;
+  const INITIAL_VISIBLE = 3;
   const FADE_MS = 4000;
   const VISIBLE_MS = 2500;
+  const VISIBLE_OPACITY = 0.45;
   const particlesEl = document.getElementById("particles");
 
   function cellKey(x, y) {
@@ -72,7 +74,21 @@
     });
   }
 
-  async function runParticle(el, reserved) {
+  function setOpacity(el, value) {
+    el.style.transition = "none";
+    el.style.opacity = String(value);
+    void el.offsetWidth;
+    el.style.transition = "";
+  }
+
+  async function fadeIn(el) {
+    el.style.opacity = "0";
+    await wait(50);
+    el.style.opacity = String(VISIBLE_OPACITY);
+    await wait(FADE_MS);
+  }
+
+  async function runParticle(el, reserved, startVisible) {
     let lastKey = null;
     while (true) {
       const occupied = getOccupiedCells();
@@ -84,10 +100,14 @@
       reserved.add(cell.key);
       lastKey = cell.key;
       placeParticle(el, cell);
-      el.style.opacity = "0";
-      await wait(50);
-      el.style.opacity = "0.45";
-      await wait(FADE_MS + VISIBLE_MS);
+      if (startVisible) {
+        startVisible = false;
+        setOpacity(el, VISIBLE_OPACITY * (0.55 + Math.random() * 0.45));
+        await wait(VISIBLE_MS * (0.3 + Math.random() * 0.7));
+      } else {
+        await fadeIn(el);
+        await wait(VISIBLE_MS);
+      }
       el.style.opacity = "0";
       await wait(FADE_MS);
       reserved.delete(cell.key);
@@ -99,9 +119,11 @@
     const el = document.createElement("div");
     el.className = "particle";
     particlesEl.appendChild(el);
+    const visibleOnLoad = i < INITIAL_VISIBLE;
+    const delay = visibleOnLoad ? 0 : (i - INITIAL_VISIBLE) * 900;
     setTimeout(function () {
-      runParticle(el, reserved);
-    }, i * 900);
+      runParticle(el, reserved, visibleOnLoad);
+    }, delay);
   }
 
   let resizeTimer;
