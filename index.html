@@ -51,36 +51,33 @@
         background-position-y: calc(var(--grid-line-width) * -1);
 
         position: relative;
-        min-height: 100vh;
-      }
 
-      body > * {
-        z-index: 2;
+        > * {
+          --item-x: 0;
+          --item-y: 0;
+          --item-w: 1;
+          --item-h: 1;
 
-        --item-x: 0;
-        --item-y: 0;
-        --item-w: 1;
-        --item-h: 1;
+          background-color: var(--grid-background);
+          padding: 0 10px;
 
-        background-color: var(--grid-background);
-        padding: 0 10px;
+          display: flex;
+          align-items: center;
 
-        display: flex;
-        align-items: center;
+          position: absolute;
+          top: calc(var(--item-y) * var(--grid-cell-size));
+          left: calc(var(--item-x) * var(--grid-cell-size));
+          width: calc(
+            var(--item-w) * var(--grid-cell-size) - var(--grid-line-width)
+          );
+          height: calc(
+            var(--item-h) * var(--grid-cell-size) - var(--grid-line-width)
+          );
 
-        position: absolute;
-        top: calc(var(--item-y) * var(--grid-cell-size));
-        left: calc(var(--item-x) * var(--grid-cell-size));
-        width: calc(
-          var(--item-w) * var(--grid-cell-size) - var(--grid-line-width)
-        );
-        height: calc(
-          var(--item-h) * var(--grid-cell-size) - var(--grid-line-width)
-        );
-      }
-
-      body > *:has(> a) {
-        padding: 0;
+          &:has(>a) {
+            padding: 0;
+          }
+        }
       }
 
       a {
@@ -95,27 +92,23 @@
 
         transition: all 0.15s ease-in-out;
         will-change: transform, background-color, color;
-      }
 
-      a:hover {
-        background-color: var(--grid-foreground);
-        color: var(--grid-background);
-        transform: scale(1.25) rotate(5deg);
-        z-index: 100;
-      }
+        &:hover {
+          background-color: var(--grid-foreground);
+          color: var(--grid-background);
+          transform: scale(1.25) rotate(5deg);
+          z-index: 100;
+        }
 
-      a svg {
-        height: 24px;
-        width: auto;
+        svg {
+          height: 24px;
+          width: auto;
+        }
       }
 
       #particles {
         position: fixed;
         inset: 0;
-        top: 0;
-        left: 0;
-        width: auto;
-        height: auto;
         padding: 0;
         background: transparent;
         pointer-events: none;
@@ -136,6 +129,7 @@
         transition: opacity 4s ease-in-out;
       }
 
+      
       #jesuis {
         --item-x: 1;
         --item-y: 1;
@@ -160,10 +154,10 @@
         --item-h: 3;
 
         text-align: center;
-      }
 
-      #quoi strong {
-        display: inline-block;
+        strong {
+          display: inline-block;
+        }
       }
       #travail {
         --item-x: 1;
